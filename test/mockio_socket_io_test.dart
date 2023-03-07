@@ -4,25 +4,8 @@ import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:event_bus/event_bus.dart';
 
-class MockSocket extends Mock implements Socket {
-  final eventBus = EventBus();
-  final mockBytes = <int>[];
-  MockSocket() {
-    eventBus.on().listen((event) {
-      // Print the runtime type. Such a set up could be used for logging.
-      print('Hello from MockSocket - ${event.runtimeType}');
-    });
-  }
-  static Future<MockSocket> connect(host, int port,
-      {sourceAddress, int sourcePort = 0, Duration? timeout}) {
-    final completer = Completer<MockSocket>();
-    final extsocket = MockSocket();
-    completer.complete(extsocket);
-    return completer.future;
-  }
-}
+import 'package:mockio/mockio.dart';
 
 final mySocket = MockSocket();
 
@@ -91,9 +74,9 @@ void main() {
         expect(mySocket.port, myPort);
       },
           socketConnect: (dynamic host, int port,
-              {dynamic sourceAddress,
-                int sourcePort = 0,
-                Duration? timeout}) =>
+                  {dynamic sourceAddress,
+                  int sourcePort = 0,
+                  Duration? timeout}) =>
               MockSocket.connect(host, port,
                   sourceAddress: sourceAddress,
                   sourcePort: sourcePort,
@@ -116,12 +99,12 @@ void main() {
         eb.fire('Hello');
         expect(mySocket.port, myPort);
         mySocket.add([1, 2, 3]);
-        mySocket.listen((event) {});
+        //mySocket.listen((event) {});
       },
           socketConnect: (dynamic host, int port,
-              {dynamic sourceAddress,
-                int sourcePort = 0,
-                Duration? timeout}) =>
+                  {dynamic sourceAddress,
+                  int sourcePort = 0,
+                  Duration? timeout}) =>
               MockSocket.connect(host, port,
                   sourceAddress: sourceAddress,
                   sourcePort: sourcePort,
