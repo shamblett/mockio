@@ -1,7 +1,4 @@
 import 'dart:io';
-import 'dart:async';
-import 'dart:typed_data';
-
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -16,10 +13,8 @@ void main() {
     });
 
     test('Getter', () {
-      when(() => mySocket.port).thenReturn(500);
-      when(() => mySocket.remotePort).thenReturn(600);
-      expect(mySocket.port, 500);
-      expect(mySocket.remotePort, 600);
+      expect(mySocket.port, 0);
+      expect(mySocket.host, '');
     });
 
     test('Setter', () {
@@ -35,28 +30,8 @@ void main() {
     });
 
     test('Add', () {
-      when(() => mySocket.add(any())).thenAnswer((invocation) {
-        mySocket.mockBytes.addAll(invocation.positionalArguments[0]);
-      });
       mySocket.add([1, 2, 3]);
       expect(mySocket.mockBytes, [1, 2, 3]);
-    });
-
-    test('Take', () async {
-      when(() => mySocket.take(any())).thenAnswer((invocation) {
-        final length = invocation.positionalArguments[0];
-        final taken = mySocket.mockBytes.take(length).toList();
-        mySocket.mockBytes.removeRange(0, length);
-        final utaken = Uint8List.fromList(taken);
-        final out = StreamController<Uint8List>();
-        out.add(utaken);
-        out.done;
-        out.close();
-        return out.stream;
-      });
-      final taken = mySocket.take(2);
-      expect(await taken.single, [1, 2]);
-      expect(mySocket.mockBytes, [3]);
     });
   });
 
@@ -66,12 +41,12 @@ void main() {
       const myHost = 'mine';
       IOOverrides.runZoned(() async {
         var mySocket = await Socket.connect(myHost, myPort);
-        when(() => mySocket.port).thenReturn(myPort);
         expect(mySocket is MockSocket, isTrue);
         mySocket = mySocket as MockSocket;
         final eb = mySocket.eventBus;
-        eb.fire('Hello');
+        eb.fire('Connected from Simple');
         expect(mySocket.port, myPort);
+        expect(mySocket.host, myHost);
       },
           socketConnect: (dynamic host, int port,
                   {dynamic sourceAddress,
@@ -87,19 +62,16 @@ void main() {
       const myHost = 'mine';
       IOOverrides.runZoned(() async {
         var mySocket = await Socket.connect(myHost, myPort);
-        when(() => mySocket.port).thenReturn(myPort);
-        when(() => mySocket.add(any())).thenAnswer((invocation) {
-          (mySocket as MockSocket)
-              .mockBytes
-              .addAll(invocation.positionalArguments[0]);
-        });
         expect(mySocket is MockSocket, isTrue);
         mySocket = mySocket as MockSocket;
         final eb = mySocket.eventBus;
-        eb.fire('Hello');
+        eb.fire('Connected from Listen');
         expect(mySocket.port, myPort);
+        expect(mySocket.host, myHost);
         mySocket.add([1, 2, 3]);
-        //mySocket.listen((event) {});
+        mySocket.listen((data) {
+          expect(data, [1, 2, 3]);
+        });
       },
           socketConnect: (dynamic host, int port,
                   {dynamic sourceAddress,
