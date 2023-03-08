@@ -50,8 +50,6 @@ void main() {
         var mySocket = await Socket.connect(myHost, myPort);
         expect(mySocket is MockSocket, isTrue);
         mySocket = mySocket as MockSocket;
-        final eb = mySocket.eventBus;
-        eb.fire('Connected from Simple');
         expect(mySocket.port, myPort);
         expect(mySocket.host, myHost);
       },
@@ -71,8 +69,6 @@ void main() {
         var mySocket = await Socket.connect(myHost, myPort);
         expect(mySocket is MockSocket, isTrue);
         mySocket = mySocket as MockSocket;
-        final eb = mySocket.eventBus;
-        eb.fire('Connected from Listen');
         expect(mySocket.port, myPort);
         expect(mySocket.host, myHost);
         mySocket.add([1, 2, 3]);

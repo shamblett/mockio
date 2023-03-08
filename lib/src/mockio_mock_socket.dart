@@ -10,7 +10,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:mocktail/mocktail.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:typed_data/typed_data.dart';
 
@@ -18,7 +17,6 @@ import 'package:typed_data/typed_data.dart';
 /// The mock socket class
 ///
 class MockSocket extends Mock implements Socket {
-  final eventBus = EventBus();
   final mockBytes = <int>[];
   final mockBytesUint = Uint8List(500);
 
