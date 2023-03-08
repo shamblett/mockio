@@ -1,3 +1,10 @@
+/*
+ * Package : mockio
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 08/03/2023
+ * Copyright :  S.Hamblett
+ */
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
@@ -7,17 +14,15 @@ import 'package:event_bus/event_bus.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:typed_data/typed_data.dart';
 
+///
+/// The mock socket class
+///
 class MockSocket extends Mock implements Socket {
   final eventBus = EventBus();
   final mockBytes = <int>[];
   final mockBytesUint = Uint8List(500);
 
-  MockSocket() {
-    eventBus.on().listen((event) {
-      // Print the runtime type. Such a set up could be used for logging.
-      print('MockSocket:: - we are $event');
-    });
-  }
+  MockSocket();
 
   @override
   int port = 0;
@@ -49,8 +54,20 @@ class MockSocket extends Mock implements Socket {
     onData!(out);
     return outgoing;
   }
+
+  @override
+  void destroy();
+
+  @override
+  Future close() {
+    final completer = Completer<Future>();
+    return completer.future;
+  }
 }
 
+///
+/// Mock socket scenario class
+///
 class MqttScenario1 extends MockSocket {
   dynamic onDataFunc;
 

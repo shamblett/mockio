@@ -1,8 +1,11 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/*
+ * Package : mockio
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 08/03/2023
+ * Copyright :  S.Hamblett
+ */
+
 library mockio;
 
 export 'src/mockio_mock_socket.dart';
 
-// TODO: Export any libraries intended for clients of this package.

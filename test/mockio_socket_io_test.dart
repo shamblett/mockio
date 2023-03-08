@@ -1,7 +1,14 @@
+/*
+ * Package : mockio
+ * Author : S. Hamblett <steve.hamblett@linux.com>
+ * Date   : 08/03/2023
+ * Copyright :  S.Hamblett
+ */
+
 import 'dart:io';
+
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
-
 import 'package:mockio/mockio.dart';
 
 final mySocket = MockSocket();

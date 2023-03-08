@@ -1,7 +1,9 @@
 name: mockio
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: Repository for experimenting with io mocking in Dart
+version: 0.1.0
+repository: https://github.com/shamblett/mockio
+
+publish_to: 'none'
 
 environment:
   sdk: '>=2.19.0 <3.0.0'
