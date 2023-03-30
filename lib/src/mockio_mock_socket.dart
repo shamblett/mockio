@@ -14,6 +14,13 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:typed_data/typed_data.dart';
 
 ///
+/// Mock socket access class
+///
+class MockSocketAccess {
+  static dynamic mockSocket;
+}
+
+//
 /// The mock socket class
 ///
 class MockSocket extends Mock implements Socket {
@@ -36,6 +43,7 @@ class MockSocket extends Mock implements Socket {
     final extSocket = MockSocket();
     extSocket.port = port;
     extSocket.host = host;
+    MockSocketAccess.mockSocket = extSocket;
     completer.complete(extSocket);
     return completer.future;
   }
@@ -68,6 +76,7 @@ class MockSocket extends Mock implements Socket {
 ///
 class MqttScenario1 extends MockSocket {
   dynamic onDataFunc;
+  dynamic onDoneFunc;
 
   static Future<MqttScenario1> connect(host, int port,
       {sourceAddress, int sourcePort = 0, Duration? timeout}) {
@@ -75,6 +84,7 @@ class MqttScenario1 extends MockSocket {
     final extSocket = MqttScenario1();
     extSocket.port = port;
     extSocket.host = host;
+    MockSocketAccess.mockSocket = extSocket;
     completer.complete(extSocket);
     return completer.future;
   }
@@ -96,6 +106,9 @@ class MqttScenario1 extends MockSocket {
   StreamSubscription<Uint8List> listen(void Function(Uint8List event)? onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
     onDataFunc = onData;
+    onDoneFunc = onDone;
     return outgoing;
   }
+
+  void onDone() => onDoneFunc();
 }
