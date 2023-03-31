@@ -42,7 +42,7 @@ void main() {
         client.logging(on: true);
         await client.connect();
         expect(client.connectionStatus!.state, MqttConnectionState.connected);
-        final mySocket = (MockSocketAccess.mockSocket as MqttScenario1);
+        final mySocket = (MockSocket.instance as MqttScenario1);
         await MqttUtilities.asyncSleep(2);
         mySocket.onDone();
         expect(
